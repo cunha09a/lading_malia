@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1º Aniversário Malia Lopes Moraes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Dancing+Script:wght@700&family=Playfair+Display:wght@400;500&family=Raleway:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #E83A7D;
+            --secondary: #6D214F;
+            --accent: #FFD166;
+            --light: #FFF5F9;
+            --dark: #2E2E2E;
+            --text: #333333;
+            --white: #FFFFFF;
+            --cream: #FFF9F5;
+            --taupe: #E8DECD;
+            --rose: #D8B4A0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-color: var(--cream);
+        }
+
+        /* NOVO CABEÇALHO MINIMALISTA */
+        .minimal-header {
+            height: 100vh;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .rainbow-container {
+            margin: 0 auto 40px;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .rainbow-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: brightness(1.05);
+        }
+        
+        .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            margin: 15px 0;
+            color: var(--dark);
+            line-height: 1.1;
+        }
+        
+        .title {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 20px 0;
+            color: var(--rose);
+        }
+        
+        .divider {
+            width: 120px;
+            height: 1px;
+            background-color: var(--rose);
+            margin: 30px auto;
+            opacity: 0.6;
+        }
+        
+        .date {
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            margin-top: 40px;
+            color: var(--dark);
+            opacity: 0.8;
+        }
+        
+        .bg-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: radial-gradient(var(--taupe) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.2;
+            z-index: 1;
+        }
+
+        /* RESTANTE DO CSS ORIGINAL */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        /* Seção do Carrossel - Modo Retrato */
+        .carousel-section {
+            margin: 60px 0;
+        }
+
+        .carousel-title {
+            text-align: center;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+
+        .carousel-container {
+            position: relative;
+            max-width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+            padding: 10px 0;
+            align-items: center;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            padding: 0 15px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .carousel-img-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            height: 400px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .carousel-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-img:hover {
+            transform: scale(1.03);
+        }
+
+        .carousel-caption {
+            margin-top: 15px;
+            font-size: 1.3rem;
+            color: var(--secondary);
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .carousel-caption .month {
+            color: var(--primary);
+        }
+
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #ccc;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .carousel-dot.active {
+            background-color: var(--primary);
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255,255,255,0.7);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            color: var(--primary);
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .carousel-btn:hover {
+            background-color: var(--white);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-btn.prev {
+            left: 10px;
+        }
+
+        .carousel-btn.next {
+            right: 10px;
+        }
+
+        .heart-icon {
+            color: var(--primary);
+            margin: 0 5px;
+        }
+
+        /* Seção Sorteio */
+        .sorteio-box {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 30px;
+            margin-bottom: 50px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(232,58,125,0.1);
+        }
+
+        .btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: var(--white);
+            border: none;
+            padding: 16px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(232,58,125,0.3);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(232,58,125,0.4);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .result-container {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: var(--light);
+            border-radius: 10px;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .color-result {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            display: inline-block;
+            min-width: 200px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .print-notice {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .map-container {
+            height: 400px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .map-link {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            display: none;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .map-link:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .address {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 50px;
+        }
+
+        .address h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .address p {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            background: var(--light);
+            margin-top: 50px;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .minimal-header {
+                min-height: auto;
+                height: auto;
+                padding: 80px 20px;
+            }
+            
+            .rainbow-container {
+                width: 250px;
+                height: 250px;
+                margin-bottom: 30px;
+            }
+            
+            .name {
+                font-size: 3.5rem;
+            }
+            
+            .title {
+                font-size: 1.5rem;
+            }
+            
+            .date {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .map-container {
+                height: 300px;
+            }
+
+            .map-link {
+                display: block;
+            }
+
+            .carousel-title {
+                font-size: 2.2rem;
+            }
+
+            .carousel-img-container {
+                height: 350px;
+                max-width: 250px;
+            }
+
+            .carousel-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .rainbow-container {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .name {
+                font-size: 2.8rem;
+            }
+            
+            .title {
+                font-size: 1.2rem;
+                letter-spacing: 2px;
+            }
+            
+            .date {
+                font-size: 1rem;
+            }
+
+            .carousel-img-container {
+                height: 300px;
+                max-width: 200px;
+            }
+
+            .carousel-caption {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NOVO CABEÇALHO MINIMALISTA -->
+    <header class="minimal-header">
+        <div class="bg-pattern"></div>
+        
+        <div class="content-wrapper">
+            <div class="rainbow-container">
+                <img src="src/arco-iris.png" alt="Arco-íris minimalista" class="rainbow-image">
+            </div>
+            
+            <h1 class="title">Primeiro Aniversário</h1>
+            <div class="divider"></div>
+            <h2 class="name">Malia Lopes Moraes</h2>
+            <div class="date">19 • 07 • 2025</div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO ORIGINAL DO SITE -->
+    <div class="container">
+        <!-- Seção do Carrossel - Modo Retrato -->
+        <div class="carousel-section">
+            <h2 class="carousel-title">Nossa Jornada</h2>
+            <div class="carousel-container">
+                <button class="carousel-btn prev" onclick="moveCarousel(-1)">&#10094;</button>
+                <div class="carousel" id="carousel">
+                    <!-- Item 1 Mês -->
+                    <div class="carousel-item">
+                        <div class="carousel-img-container">
+                            <img src="https://lh3.googleusercontent.com/pw/AP1GczMuzzE4DFqUNHkc9WhXczZcla_hkNIOFAWIGrKpZ5DokiNOUw86vRgrDtlgcx0JZCnOBe55mHYXxaHUd3Ak7i65tmiLDgjSJWXCg6bWyalqltwa5eViIDl3InnQDBhV8Hm59SnRhb_ZUoE9LT1O-mI=w441-h641-s-no-gm?authuser=0" alt="Malia com 1 mês" class="carousel-img">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="month">1 Mês</span> <i class="fas fa-heart heart-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 2 Meses -->
+                    <div class="carousel-item">
+                        <div class="carousel-img-container">
+                            <img src="https://lh3.googleusercontent.com/pw/AP1GczOb2RNL-4HbwCfmOUjvgLD3s2m9-mr2vKFzoFzgqo4TMwOYmxtZITVuGA_Rv45-85DtRp6B2MG5kesZJ7u2XrTySMp_7jRw5IV0u3L5tem-SEUNhUkoIksxyx2Yh0KltyKU4_kKFvW5vQU6EVbDlP0=w480-h641-s-no-gm?authuser=0" alt="Malia com 2 meses" class="carousel-img">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="month">2 Meses</span> <i class="fas fa-heart heart-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 3 Meses -->
+                    <div class="carousel-item">
+                        <div class="carousel-img-container">
+                            <img src="https://lh3.googleusercontent.com/pw/AP1GczO0sQoVLvt-wAqCZceu0jDl9MrFdYxJcZgf1h9N3XtvRvqSbeilLWafVe_S5gDJSNR-rqjPgPsW595SKAAktMSAPV01OYUX4eIHFX3EbcknAfIEZC6FWWFdeokP1B3EfJVFy8X3TqCw27i8iFQ-F1M=w480-h641-s-no-gm?authuser=0" alt="Malia com 3 meses" class="carousel-img">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="month">3 Meses</span> <i class="fas fa-heart heart-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 4 Meses -->
+                    <div class="carousel-item">
+                        <div class="carousel-img-container">
+                            <img src="https://lh3.googleusercontent.com/pw/AP1GczMiRGymmwDyWcg7L97i_DD7grteZjzJ3Uvyk6AC7PEx3QVFr9LZtP1zKmCx1tBHmDd4wpjxUqzvEp6D_rtso4kTAkUBXUGJLcV8o5ENhVPOCWSUcXujBczMwNH-yZdxqTrGlXaYHrNMbHhG-Wd9EqQ=w480-h641-s-no-gm?authuser=0" alt="Malia com 4 meses" class="carousel-img">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="month">4 Meses</span> <i class="fas fa-heart heart-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 5 Meses -->
+                    <div class="carousel-item">
+                        <div class="carousel-img-container">
+                            <img src="https://lh3.googleusercontent.com/pw/AP1GczMSOz6L5bBUUSSRbzUi1oUWtSW73SQs75fwVnhLat5ck-Lexq_UJHhsRmvGIMuJyrSj6zIvHcUsAlE4mVUIeFsrBtzNvZnbdoUhLLpz1JWVJP2OJxmEa_CuTpHlXLffmsNQILjEJU7XQuc6qOqPY4o=w480-h641-s-no-gm?authuser=0" alt="Malia com 5 meses" class="carousel-img">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="month">5 Meses</span> <i class="fas fa-heart heart-icon"></i> 
+                        </div>
+                    </div>
+                    
+                    <!-- Item 6 Meses -->
+                    <div class="carousel-item">
+                        <div class="carousel-img-container">
+                            <img src="https://lh3.googleusercontent.com/pw/AP1GczO5dUJhKoHD329ltHXTSy1oRsAOPvRXocd65Cm6FSC43AXq1ui-WOKRQVYD2wHKYCkjpF4Jpl1YnikfqYW7ML4tTnVv_dEZlS6uYMAlTLGzLBP5qWDFBAK-9aMFtXwtdCrbB-QnGe8wnYgoEtSDfY4=w480-h641-s-no-gm?authuser=0" alt="Malia com 6 meses" class="carousel-img">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="month">6 Meses</span> <i class="fas fa-heart heart-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 7 Meses -->
+                    <div class="carousel-item">
+                        <div class="carousel-img-container">
+                            <img src="https://lh3.googleusercontent.com/pw/AP1GczMRQAi7ejWr4v7sDHnzW-XXbGvKv3oKZsAgY6PHltsKYrH01UCVcSlmp_yLCC4U7JURNpAbGpR7F6Oe0_ZIvqrNjK4s_hFKPXGysw1txVhUgoG1ugmktAzpIEDlWJJqDPWOyhDRjX4xYM0I8VnHvNU=w480-h641-s-no-gm?authuser=0" alt="Malia com 7 meses" class="carousel-img">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="month">7 Meses</span> <i class="fas fa-heart heart-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 8 Meses -->
+                    <div class="carousel-item">
+                        <div class="carousel-img-container">
+                            <img src="https://lh3.googleusercontent.com/pw/AP1GczOd85nu6n9C8YdEb53FFSJAPFKMRwq9gaAYD4pvrPKqf0ySD5ZcqX85fexUbw3xNiyFpzB3Ey-xM7OBU5DC5IO37PyEBLk6dY5_Hfo1FYNWGiqwYAOi0DyjqiYQ8sKFrvMtUO1QwRutwjPUklF3EmQ=w480-h641-s-no-gm?authuser=0" alt="Malia com 8 meses" class="carousel-img">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="month">8 Meses</span> <i class="fas fa-heart heart-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 9 Meses -->
+                    <div class="carousel-item">
+                        <div class="carousel-img-container">
+                            <img src="https://lh3.googleusercontent.com/pw/AP1GczNtjaFx9FQOsuRm6xY9nlcUc4lfRDQ8OV55vtXrDP8lRqIJNb5TsYg9pg8xgvuVK4VJSvmALRrG_HKmDSZLwjjlgMM3n9wJDo54sAILp_Qv53bA_jRCqSed31h7V_ztNr0zch88i7_IXEXJrBp7_Mg=w480-h641-s-no-gm?authuser=0" alt="Malia com 9 meses" class="carousel-img">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="month">9 Meses</span> <i class="fas fa-heart heart-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 10 Meses -->
+                    <div class="carousel-item">
+                        <div class="carousel-img-container">
+                            <img src="https://lh3.googleusercontent.com/pw/AP1GczMU9J520JOo94XXNHF9xoqqA05Zd3KACtdyx-45Rm9y2EJGwlaKy7e-ijK7oWWiwlwjG_Np5vT-v7wlf7UHw9T8cfhH9_aK8_q0YgEYnNWCymnmpifX9-UpcYGQwQ8ZxJzLgI4dy6eo_hPlkoj4opM=w480-h641-s-no-gm?authuser=0" alt="Malia com 10 meses" class="carousel-img">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="month">10 Meses</span> <i class="fas fa-heart heart-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Item 11 Meses -->
+                    <div class="carousel-item">
+                        <div class="carousel-img-container">
+                            <img src="https://lh3.googleusercontent.com/pw/AP1GczNu7HJsDiHtITLDVcU37McVnwCPxWuYl3K8o0wLUQiYDMEtbnH1NIlzR807ZH6h_Yj_uCvSRWzVl-lZPSBiNdPZ5XM8qQ4axe9s1DFM-IrlwlkarGGWP8-9ZWU4Jt0g_ndOIRUlitpkhuPbAOacdMs=w480-h641-s-no-gm?authuser=0" alt="Malia com 11 meses" class="carousel-img">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="month">11 Meses</span> <i class="fas fa-heart heart-icon"></i>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-btn next" onclick="moveCarousel(1)">&#10095;</button>
+                <div class="carousel-nav" id="carousel-dots"></div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Sorteio de Cores</h2>
+        
+        <div class="sorteio-box">
+            <p style="margin-bottom: 20px; text-align: center; font-family: 'Raleway', sans-serif;">Para tornar este dia ainda mais especial, cada família terá uma cor exclusiva para vestir!</p>
+            
+            <div id="form-section">
+                <div class="form-group">
+                    <label for="family-name">Nome da Família/Representante</label>
+                    <input type="text" id="family-name" placeholder="Ex: Família Oliveira" required>
+                </div>
+                
+                <button class="btn" onclick="sortearCor()">Sortear Nossa Cor</button>
+            </div>
+            
+            <div id="result-section" class="result-container">
+                <h3 id="family-name-result" style="margin-bottom: 15px; font-family: 'Montserrat', sans-serif;"></h3>
+                <p style="font-family: 'Raleway', sans-serif;">Sua cor exclusiva é:</p>
+                <div class="color-result" id="color-result"></div>
+                
+                <div class="print-notice">
+                    <p>Salve esta informação (print ou anotação) para referência no evento.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Local do Evento</h2>
+        
+        <div class="address">
+            <h3>Residência Lopes Moraes</h3>
+            <p><strong>Endereço:</strong> Rua 13 de Outubro, 32 - Vila Coelho Dias</p>
+            <p><strong>Horário:</strong> 17h30</p>
+        </div>
+        
+        <div class="map-container" id="map">
+            <div class="map-overlay">
+                <a href="https://www.google.com/maps/dir/?api=1&destination=Rua+13+de+Outubro,+32+-+Vila+Coelho+Dias" class="map-link" target="_blank" rel="noopener noreferrer">Abrir no Google Maps</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Celebre conosco este momento especial!</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Cores disponíveis atualizadas
+        const cores = [
+            { nome: "Rosa", codigo: "#FFC0CB", emoji: "🌸", texto: "#333" },
+            { nome: "Amarelo", codigo: "#FFFF00", emoji: "🌞", texto: "#333" },
+            { nome: "Azul Claro", codigo: "#ADD8E6", emoji: "💎", texto: "#333" },
+            { nome: "Verde Claro", codigo: "#90EE90", emoji: "🌿", texto: "#333" },
+            { nome: "Vermelho", codigo: "#FF0000", emoji: "❤️", texto: "white" },
+            { nome: "Laranja", codigo: "#FFA500", emoji: "🟠", texto: "#333" },
+            { nome: "Cinza", codigo: "#808080", emoji: "⚪", texto: "white" },
+            { nome: "Roxo", codigo: "#800080", emoji: "🔮", texto: "white" },
+            { nome: "Preto", codigo: "#000000", emoji: "⚫", texto: "white" },
+            { nome: "Marrom", codigo: "#A52A2A", emoji: "🟤", texto: "white" },
+            { nome: "Branco", codigo: "#FFFFFF", emoji: "🤍", texto: "#333" },
+            { nome: "Lavanda", codigo: "#E6E6FA", emoji: "💜", texto: "#333" },
+            { nome: "Verde Escuro", codigo: "#006400", emoji: "🌲", texto: "white" },
+            { nome: "Azul Marinho", codigo: "#000080", emoji: "🌊", texto: "white" }
+        ];
+
+        // Inicializa o mapa (coordenadas aproximadas - substitua pelas reais)
+        const map = L.map('map').setView([-4.2163002, -44.7901097], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        // Adiciona marcador (substitua pelas coordenadas reais)
+        L.marker([-4.2163002, -44.7901097]).addTo(map)
+            .bindPopup('Residência Lopes Moraes<br>Rua 13 de Outubro, 32<br><a href="https://www.google.com/maps/dir/?api=1&destination=Rua+13+de+Outubro,+32+-+Vila+Coelho+Dias" target="_blank">Abrir no Google Maps</a>')
+            .openPopup();
+
+        function sortearCor() {
+            const nomeFamilia = document.getElementById('family-name').value.trim();
+            if (!nomeFamilia) {
+                alert("Por favor, insira o nome da família ou representante.");
+                return;
+            }
+
+            // Recupera cores já sorteadas
+            let coresSorteadas = JSON.parse(localStorage.getItem('coresSorteadas')) || [];
+            
+            // Filtra cores disponíveis
+            const coresDisponiveis = cores.filter(cor => 
+                !coresSorteadas.some(item => item.cor === cor.nome)
+            );
+
+            if (coresDisponiveis.length === 0) {
+                alert("Todas as cores já foram sorteadas. Entre em contato com os organizadores.");
+                return;
+            }
+
+            // Sorteia uma cor
+            const indiceSorteado = Math.floor(Math.random() * coresDisponiveis.length);
+            const corSorteada = coresDisponiveis[indiceSorteado];
+
+            // Atualiza a lista de cores sorteadas
+            coresSorteadas.push({
+                familia: nomeFamilia,
+                cor: corSorteada.nome,
+                data: new Date().toLocaleString('pt-BR')
+            });
+            localStorage.setItem('coresSorteadas', JSON.stringify(coresSorteadas));
+
+            // Exibe o resultado
+            document.getElementById('family-name-result').textContent = nomeFamilia;
+            document.getElementById('color-result').textContent = corSorteada.nome + " " + corSorteada.emoji;
+            document.getElementById('color-result').style.backgroundColor = corSorteada.codigo;
+            document.getElementById('color-result').style.color = corSorteada.texto || 'white';
+            
+            document.getElementById('form-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+        }
+
+        // Mostra o link do Google Maps em dispositivos móveis
+        function checkScreenSize() {
+            const mapLink = document.querySelector('.map-link');
+            if (window.innerWidth <= 768) {
+                mapLink.style.display = 'block';
+            } else {
+                mapLink.style.display = 'none';
+            }
+        }
+
+        // Carrossel de fotos - Modo Retrato
+        let currentSlide = 0;
+        const carousel = document.getElementById('carousel');
+        const items = document.querySelectorAll('.carousel-item');
+        const dotsContainer = document.getElementById('carousel-dots');
+
+        // Cria os dots de navegação
+        function createDots() {
+            items.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('carousel-dot');
+                if (index === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(index));
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        // Atualiza os dots ativos
+        function updateDots() {
+            const dots = document.querySelectorAll('.carousel-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Vai para um slide específico
+        function goToSlide(slideIndex) {
+            currentSlide = (slideIndex + items.length) % items.length;
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+            updateDots();
+        }
+
+        // Move o carrossel (avança ou retrocede)
+        function moveCarousel(direction) {
+            goToSlide(currentSlide + direction);
+        }
+
+        // Inicializa o carrossel
+        function initCarousel() {
+            createDots();
+            
+            // Navegação por teclado
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') moveCarousel(-1);
+                if (e.key === 'ArrowRight') moveCarousel(1);
+            });
+        }
+
+        // Inicializa tudo quando a página carrega
+        window.addEventListener('DOMContentLoaded', () => {
+            checkScreenSize();
+            initCarousel();
+        });
+
+        window.addEventListener('resize', checkScreenSize);
+    </script>
+</body>
+</html>

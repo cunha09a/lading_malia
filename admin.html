@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cores Sorteadas - Aniversário Malia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Raleway:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #E83A7D;
+            --secondary: #6D214F;
+            --light: #FFF5F9;
+            --dark: #2E2E2E;
+            --white: #FFFFFF;
+            --cream: #FFF9F5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: var(--cream);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+        }
+
+        tr:hover {
+            background-color: var(--light);
+        }
+
+        .color-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-square {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(232,58,125,0.3);
+            font-family: 'Montserrat', sans-serif;
+            text-decoration: none;
+            text-align: center;
+            flex: 1;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(232,58,125,0.4);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light);
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .delete-btn {
+            color: #ff4444;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 0 10px;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            color: #cc0000;
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .color-cell {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cores Sorteadas</h1>
+        <p class="subtitle">Veja abaixo a lista de famílias e suas cores sorteadas para o aniversário da Malia</p>
+        
+        <div id="results-container">
+            <!-- Os resultados serão inseridos aqui pelo JavaScript -->
+        </div>
+        
+        <div class="actions">
+            <button class="btn" onclick="window.location.href='index.html'">Voltar para o Site</button>
+            <button class="btn btn-secondary" onclick="exportToCSV()">Exportar para CSV</button>
+            <button class="btn btn-secondary" onclick="removeDuplicates()">Remover Duplicados</button>
+            <button class="btn btn-secondary" onclick="clearData()">Limpar Dados</button>
+        </div>
+    </div>
+
+    <script>
+        // Cores correspondentes (deve ser igual ao array da página principal)
+        const cores = [
+            { nome: "Rosa", codigo: "#FFC0CB" },
+            { nome: "Amarelo", codigo: "#FFFF00" },
+            { nome: "Azul Claro", codigo: "#ADD8E6" },
+            { nome: "Verde Claro", codigo: "#90EE90" },
+            { nome: "Vermelho", codigo: "#FF0000" },
+            { nome: "Laranja", codigo: "#FFA500" },
+            { nome: "Cinza", codigo: "#808080" },
+            { nome: "Roxo", codigo: "#800080" },
+            { nome: "Preto", codigo: "#000000" },
+            { nome: "Marrom", codigo: "#A52A2A" },
+            { nome: "Branco", codigo: "#FFFFFF" },
+            { nome: "Lavanda", codigo: "#E6E6FA" },
+            { nome: "Verde Escuro", codigo: "#006400" },
+            { nome: "Azul Marinho", codigo: "#000080" }
+        ];
+
+        // Carrega os dados do localStorage
+        function loadData() {
+            const container = document.getElementById('results-container');
+            const data = JSON.parse(localStorage.getItem('coresSorteadas')) || [];
+            
+            if (data.length === 0) {
+                container.innerHTML = '<div class="empty-message">Nenhuma cor foi sorteada ainda.</div>';
+                return;
+            }
+            
+            // Ordena por data (mais recente primeiro)
+            data.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Família/Representante</th>
+                            <th>Cor Sorteada</th>
+                            <th>Data/Hora</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            data.forEach((item, index) => {
+                const corInfo = cores.find(c => c.nome === item.cor) || { nome: item.cor, codigo: '#CCCCCC' };
+                
+                html += `
+                    <tr>
+                        <td>${item.familia}</td>
+                        <td>
+                            <div class="color-cell">
+                                <span class="color-square" style="background-color: ${corInfo.codigo};"></span>
+                                ${corInfo.nome}
+                            </div>
+                        </td>
+                        <td>${item.data}</td>
+                        <td><span class="delete-btn" onclick="deleteItem(${index})">×</span></td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+                <p style="margin-top: 15px; text-align: right; color: #666;">Total: ${data.length} famílias</p>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // Remove um item específico
+        function deleteItem(index) {
+            if (confirm("Tem certeza que deseja excluir este registro?")) {
+                const data = JSON.parse(localStorage.getItem('coresSorteadas')) || [];
+                data.splice(index, 1);
+                localStorage.setItem('coresSorteadas', JSON.stringify(data));
+                loadData();
+            }
+        }
+
+        // Remove famílias com mais de uma cor, mantendo apenas a primeira sorteada
+        function removeDuplicates() {
+            const data = JSON.parse(localStorage.getItem('coresSorteadas')) || [];
+            
+            if (data.length === 0) {
+                alert("Não há dados para processar.");
+                return;
+            }
+            
+            // Ordena por data (mais antiga primeiro para manter o primeiro sorteio)
+            data.sort((a, b) => new Date(a.data) - new Date(b.data));
+            
+            const familiasUnicas = {};
+            const resultado = [];
+            
+            // Filtra mantendo apenas o primeiro registro de cada família
+            data.forEach(item => {
+                if (!familiasUnicas[item.familia]) {
+                    familiasUnicas[item.familia] = true;
+                    resultado.push(item);
+                }
+            });
+            
+            // Ordena por data novamente (mais recente primeiro para exibição)
+            resultado.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            localStorage.setItem('coresSorteadas', JSON.stringify(resultado));
+            loadData();
+            
+            alert(`Foram removidos ${data.length - resultado.length} registros duplicados. Restaram ${resultado.length} famílias.`);
+        }
+
+        // Exporta os dados para CSV
+        function exportToCSV() {
+            const data = JSON.parse(localStorage.getItem('coresSorteadas')) || [];
+            
+            if (data.length === 0) {
+                alert("Não há dados para exportar.");
+                return;
+            }
+            
+            let csv = "Família,Cor,Data/Hora\n";
+            
+            data.forEach(item => {
+                csv += `"${item.familia}","${item.cor}","${item.data}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'cores_sorteadas_aniversario.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Limpa todos os dados
+        function clearData() {
+            if (confirm("Tem certeza que deseja limpar TODOS os dados de cores sorteadas? Esta ação não pode ser desfeita.")) {
+                localStorage.removeItem('coresSorteadas');
+                loadData();
+                alert("Todos os dados foram removidos.");
+            }
+        }
+
+        // Carrega os dados quando a página é aberta
+        window.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>
